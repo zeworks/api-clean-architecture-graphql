@@ -1,0 +1,218 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model album {
+  id                Int                 @id @default(autoincrement())
+  createdAt         DateTime            @default(now()) @db.DateTime(6)
+  updatedAt         DateTime            @default(now()) @db.DateTime(6)
+  uuid              String              @default(uuid())
+  title_en          String?             @db.VarChar(255)
+  title_es          String?             @db.VarChar(255)
+  title_pt          String?             @db.VarChar(255)
+  description_en    String?             @db.VarChar(255)
+  description_es    String?             @db.VarChar(255)
+  description_pt    String?             @db.VarChar(255)
+  album_media_media album_media_media[]
+
+  @@index([uuid], name: "FK_82d3c1c72e45cece1b77dfb49bc")
+}
+
+model album_media_media {
+  id       Int    @id @default(autoincrement())
+  album_id String
+  media_id String
+  album    album  @relation(fields: [album_id], references: [uuid])
+  media    media  @relation(fields: [media_id], references: [uuid])
+}
+
+model block {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @db.DateTime(6)
+  updatedAt   DateTime @default(now()) @db.DateTime(6)
+  entity_id   Int
+  entity_type Int
+  block_id    Int
+  locale      String   @db.VarChar(255)
+  block_type  String   @db.VarChar(255)
+  position    String?  @db.VarChar(255)
+}
+
+model block_medium {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now()) @db.DateTime(6)
+  updatedAt      DateTime @default(now()) @db.DateTime(6)
+  uuid           String   @db.VarChar(255)
+  title_en       String?  @db.VarChar(255)
+  title_pt       String?  @db.VarChar(255)
+  title_es       String?  @db.VarChar(255)
+  description_en String?  @db.VarChar(255)
+  description_pt String?  @db.VarChar(255)
+  description_es String?  @db.VarChar(255)
+  media_id       String?
+  style          String   @db.VarChar(255)
+  media          media?   @relation(fields: [media_id], references: [uuid])
+
+  @@index([media_id], name: "FK_82d3c1c72e45cece9b77dfb49bc")
+}
+
+model block_text {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now()) @db.DateTime(6)
+  updatedAt      DateTime @default(now()) @db.DateTime(6)
+  uuid           String   @db.VarChar(255)
+  value          String   @db.VarChar(255)
+  extended_value String?  @db.VarChar(255)
+  style          String   @db.VarChar(255)
+}
+
+model media_medium_type {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @db.DateTime(6)
+  updatedAt   DateTime @default(now()) @db.DateTime(6)
+  name        String   @db.VarChar(255)
+  description String   @db.VarChar(255)
+  media       media?
+}
+
+model media {
+  uuid                 String              @default(uuid())
+  createdAt            DateTime            @default(now()) @db.DateTime(6)
+  updatedAt            DateTime            @default(now()) @db.DateTime(6)
+  active               Boolean             @default(false)
+  name                 String              @db.VarChar(255)
+  mimetype             String              @db.VarChar(255)
+  url                  String              @db.VarChar(255)
+  title_en             String?             @db.VarChar(255)
+  title_es             String?             @db.VarChar(255)
+  title_pt             String?             @db.VarChar(255)
+  description_en       String?             @db.VarChar(255)
+  description_es       String?             @db.VarChar(255)
+  description_pt       String?             @db.VarChar(255)
+  media_medium_type_id Int
+  medium_type          media_medium_type   @relation(fields: [media_medium_type_id], references: [id])
+  // media relations
+  album_media_media    album_media_media[]
+  block_medium         block_medium[]
+  news                 news?
+
+  @@id([uuid])
+}
+
+model menu {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.DateTime(6)
+  updatedAt DateTime @default(now()) @db.DateTime(6)
+  uuid      String   @db.VarChar(255)
+  title_en  String?  @db.VarChar(255)
+  title_es  String?  @db.VarChar(255)
+  title_pt  String?  @db.VarChar(255)
+  path_en   String?  @db.VarChar(255)
+  path_es   String?  @db.VarChar(255)
+  path_pt   String?  @db.VarChar(255)
+  url_en    String?  @db.VarChar(255)
+  url_es    String?  @db.VarChar(255)
+  url_pt    String?  @db.VarChar(255)
+  parent    String?  @db.VarChar(255)
+  active    Boolean  @default(false)
+  editable  Int?     @default(1)
+  position  Int?
+}
+
+model migrations {
+  id        Int    @id @default(autoincrement())
+  timestamp BigInt
+  name      String @db.VarChar(255)
+}
+
+model news {
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now()) @db.DateTime(6)
+  updatedAt       DateTime @default(now()) @db.DateTime(6)
+  uuid            String   @db.VarChar(255)
+  slug_en         String?  @db.VarChar(255)
+  slug_es         String?  @db.VarChar(255)
+  slug_pt         String?  @db.VarChar(255)
+  title_en        String?  @db.VarChar(255)
+  title_pt        String?  @db.VarChar(255)
+  title_es        String?  @db.VarChar(255)
+  introduction_en String?  @db.VarChar(255)
+  introduction_pt String?  @db.VarChar(255)
+  introduction_es String?  @db.VarChar(255)
+  active          Boolean  @default(false)
+  media_id        String
+  media           media?   @relation(fields: [media_id], references: [uuid])
+
+  // news relations
+  categories categories[]
+  tags       tags[]
+}
+
+model subscription {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.DateTime(6)
+  updatedAt DateTime @default(now()) @db.DateTime(6)
+  uuid      String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
+  active    Boolean  @default(true)
+}
+
+model user {
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now()) @db.DateTime(6)
+  updatedAt   DateTime      @default(now()) @db.DateTime(6)
+  uuid        String        @unique @db.VarChar(255)
+  firstName   String        @db.VarChar(255)
+  lastName    String?       @db.VarChar(255)
+  email       String        @unique @db.VarChar(255)
+  password    String        @db.VarChar(255)
+  accessToken String?       @db.VarChar(255)
+  active      Boolean       @default(false)
+  avatarUrl   String?       @db.VarChar(255)
+  roles       roles[]
+  permissions permissions[]
+}
+
+model permissions {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.DateTime(6)
+  updatedAt DateTime @default(now()) @db.DateTime(6)
+  key       String   @db.VarChar(255)
+  parent    Int?
+  user      user[]
+}
+
+model roles {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.DateTime(6)
+  updatedAt DateTime @default(now()) @db.DateTime(6)
+  name      String   @db.VarChar(255)
+  user      user[]
+}
+
+model categories {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.DateTime(6)
+  updatedAt DateTime @default(now()) @db.DateTime(6)
+  name_en   String?  @db.VarChar(255)
+  name_es   String?  @db.VarChar(255)
+  name_pt   String?  @db.VarChar(255)
+  slug_en   String?  @db.VarChar(255)
+  slug_es   String?  @db.VarChar(255)
+  slug_pt   String?  @db.VarChar(255)
+  news      news[]
+}
+
+model tags {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.DateTime(6)
+  updatedAt DateTime @default(now()) @db.DateTime(6)
+  name      String   @db.VarChar(255)
+  slug      String   @db.VarChar(255)
+  news      news[]
+}

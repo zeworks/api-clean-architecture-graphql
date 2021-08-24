@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "lib": [
+        "es6",
+    ],             
+    "moduleResolution": "node",
+    "allowJs": true,                             
+    "declaration": true,       
+    "sourceMap": true,                           
+    "outDir": "dist",                              
+    "rootDir": "src",
+    "strict": true,                                 
+    "baseUrl": ".",                             
+    "paths": {
+      "@/tests/*": ["./tests/*"],
+      "@/*": ["./src/*"]
+    },                                 
+    "esModuleInterop": true,                        
+    "skipLibCheck": true,                           
+    "forceConsistentCasingInFileNames": true,        
+  },
+  "include": ["src", "tests"]
+}
