@@ -1,6 +1,7 @@
 import {
   CreateSessionRepository,
-  LoadSessionByTokenRepository
+  LoadSessionByTokenRepository,
+  UpdateSessionTokenRepository
 } from '@/data/protocols/db';
 import { db } from '@/infra/db'
 import { UserInvalidError } from '@/infra/errors/user';
@@ -36,7 +37,20 @@ export class SessionRepository implements CreateSessionRepository, LoadSessionBy
   }
 
   async loadSessionByToken(token: LoadSessionByTokenRepository.Params): Promise<LoadSessionByTokenRepository.Result> {
-
+    const user = await db.user.findFirst({ where: { accessToken: token } })
+    return user
   }
 
+  async updateSessionToken(input: UpdateSessionTokenRepository.Params): Promise<UpdateSessionTokenRepository.Result> {
+    const session = await db.user.update({
+      data: {
+        accessToken: input.token,
+      },
+      where: {
+        uuid: input.id
+      }
+    })
+
+    return session
+  }
 }

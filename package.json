@@ -4,10 +4,9 @@
   "description": "VEN Software API",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev -r tsconfig-paths/register --respawn --ignore-watch node_modules --no-notify src/main/server.ts",
-    "build": "rimraf -r dist && tsc",
-    "start-server": "node dist/main/server.js",
-    "test": "jest --verbose --passWithNoTests --runInBand --no-cache --detectOpenHandles"
+    "dev": "tsc -w",
+    "start-server": "nodemon dist/main/server.js",
+    "build": "rimraf dist && tsc"
   },
   "author": "VEN",
   "license": "MIT",
@@ -48,6 +47,6 @@
     "node": "12.x"
   },
   "_moduleAliases": {
-    "@": "src"
+    "@": "dist"
   }
 }

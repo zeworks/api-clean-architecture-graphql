@@ -1,6 +1,6 @@
 import { CreateUserRepository, LoadUserByEmailRepository } from '@/data/protocols/db'
 import { db } from '@/infra/db'
-import { UserExistsError } from '@/infra/errors/user';
+import { UserExistsError, UserInvalidError } from '@/infra/errors/user';
 import { v4 as uuidv4 } from 'uuid'
 
 export class UserRepository implements CreateUserRepository, LoadUserByEmailRepository {
@@ -23,6 +23,10 @@ export class UserRepository implements CreateUserRepository, LoadUserByEmailRepo
 
   async loadUserByEmail(email: LoadUserByEmailRepository.Params): Promise<LoadUserByEmailRepository.Result> {
     const user = await db.user.findUnique({ where: { email } });
+
+    if (!user)
+      throw new UserInvalidError();
+
     return user;
   }
 }

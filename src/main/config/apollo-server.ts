@@ -10,7 +10,7 @@ export const setupApolloServer = (app: Express): void => {
     resolvers,
     typeDefs,
     schemaDirectives,
-    context: ({ req }) => ({ req }),
+    context: ({ req, res }) => ({ req, res }),
     formatError: (error) => {
       return {
         message: error.message

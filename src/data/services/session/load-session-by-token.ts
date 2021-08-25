@@ -1,7 +1,7 @@
 import { LoadSessionByToken } from '@/domain/usecases/session'
 import { LoadSessionByTokenRepository } from '@/data/protocols/db'
 
-export class UpdateSessionTokenService implements LoadSessionByToken {
+export class LoadSessionTokenService implements LoadSessionByToken {
   constructor(
     private readonly loadBySessionTokenRepository: LoadSessionByTokenRepository
   ) { }

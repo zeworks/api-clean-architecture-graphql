@@ -6,5 +6,5 @@ export interface LoadSessionByToken {
 
 export namespace LoadSessionByToken {
   export type Params = string
-  export type Result = Session
+  export type Result = Session | null
 }

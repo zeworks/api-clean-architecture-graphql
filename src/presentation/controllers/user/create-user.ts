@@ -1,5 +1,6 @@
 import { CreateUser } from '@/domain/usecases/user'
-import { Controller, HttpResponse, ok, serverError } from '@/presentation/protocols'
+import { Controller, HttpResponse } from '@/presentation/protocols'
+import { ok, serverError } from '@/presentation/helpers'
 import { CreateUserViewModel } from '@/presentation/view-models/user'
 
 export class CreateUserController implements Controller {

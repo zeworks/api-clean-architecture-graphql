@@ -6,6 +6,7 @@ export const adaptResolver = async (controller: Controller, args?: any, context?
     ...(args || {}),
   }
   const httpResponse = await controller.handle(request)
+  console.log(httpResponse);
 
   return httpResponse.data
 }
