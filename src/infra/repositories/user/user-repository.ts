@@ -1,32 +1,34 @@
 import { CreateUserRepository, LoadUserByEmailRepository } from '@/data/protocols/db'
 import { db } from '@/infra/db'
-import { UserExistsError, UserInvalidError } from '@/infra/errors/user';
 import { v4 as uuidv4 } from 'uuid'
 
 export class UserRepository implements CreateUserRepository, LoadUserByEmailRepository {
   async create(input: CreateUserRepository.Params): Promise<CreateUserRepository.Result> {
-
-    // validate if the user already exists
-    const userAlreadyExists = !!await db.user.findUnique({ where: { email: input.email } });
-    if (userAlreadyExists) throw new UserExistsError()
-
     const user = await db.user.create({
       data: {
         ...input,
-        password: 'teste',
-        uuid: uuidv4()
+        uuid: uuidv4(),
+        permissions: {
+          connect: input.permissions?.map(permission => ({
+            id: permission || 0
+          }))
+        },
+        roles: {
+          connect: input.roles?.map(role => ({
+            id: role || 0
+          }))
+        }
+      },
+      include: {
+        permissions: true,
+        roles: true
       }
     })
-
     return user
   }
 
   async loadUserByEmail(email: LoadUserByEmailRepository.Params): Promise<LoadUserByEmailRepository.Result> {
     const user = await db.user.findUnique({ where: { email } });
-
-    if (!user)
-      throw new UserInvalidError();
-
     return user;
   }
 }

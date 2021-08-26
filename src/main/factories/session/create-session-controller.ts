@@ -1,4 +1,3 @@
-import { CreateSessionService } from '@/data/services/session'
 import { BcryptAdapter, JwtAdapter } from '@/infra/adapters'
 import { SessionRepository } from '@/infra/repositories/session'
 import { UserRepository } from '@/infra/repositories/user'
@@ -11,6 +10,5 @@ export const makeCreateSessionController = (): Controller => {
   const jwtAdapter = new JwtAdapter(process.env.JWT_SECRET)
   const sessionRepository = new SessionRepository()
   const userRepository = new UserRepository()
-  const service = new CreateSessionService(sessionRepository)
-  return new CreateSessionController(service, userRepository, bcryptAdapter, jwtAdapter, sessionRepository)
+  return new CreateSessionController(userRepository, bcryptAdapter, jwtAdapter, sessionRepository)
 }
