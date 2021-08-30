@@ -5,6 +5,8 @@ export interface CreateUserRepository {
 }
 
 export namespace CreateUserRepository {
-  export type Params = CreateUser.Params
+  export type Params = CreateUser.Params & {
+    uuid: string
+  }
   export type Result = CreateUser.Result
 }

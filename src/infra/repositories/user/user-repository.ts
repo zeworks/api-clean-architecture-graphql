@@ -1,13 +1,11 @@
 import { CreateUserRepository, LoadUserByEmailRepository } from '@/data/protocols/db'
 import { db } from '@/infra/db'
-import { v4 as uuidv4 } from 'uuid'
 
 export class UserRepository implements CreateUserRepository, LoadUserByEmailRepository {
   async create(input: CreateUserRepository.Params): Promise<CreateUserRepository.Result> {
     const user = await db.user.create({
       data: {
         ...input,
-        uuid: uuidv4(),
         permissions: {
           connect: input.permissions?.map(permission => ({
             id: permission || 0

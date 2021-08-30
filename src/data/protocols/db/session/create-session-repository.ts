@@ -5,6 +5,9 @@ export interface CreateSessionRepository {
 }
 
 export namespace CreateSessionRepository {
-  export type Params = CreateSession.Params
+  export type Params = {
+    email: string
+    password: string
+  }
   export type Result = CreateSession.Result
 }

@@ -1,2 +1,2 @@
 export * from "./load-session-by-token"
-export * from "./update-session-token"
+export * from "./create-session"

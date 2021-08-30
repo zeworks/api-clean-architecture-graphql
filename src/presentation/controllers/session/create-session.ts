@@ -1,6 +1,9 @@
 import { Encrypter, HashComparer } from '@/data/protocols/cryptography'
-import { LoadUserByEmailRepository, UpdateSessionTokenRepository } from '@/data/protocols/db'
-import { CreateSession } from '@/domain/usecases/session'
+import {
+  CreateSessionRepository,
+  LoadUserByEmailRepository,
+  UpdateSessionTokenRepository
+} from '@/data/protocols/db'
 import { Controller, HttpResponse } from '@/presentation/protocols'
 import { ok } from '@/presentation/helpers'
 import { CreateSessionViewModel } from '@/presentation/view-models/session'
@@ -14,16 +17,21 @@ export class CreateSessionController implements Controller {
     private readonly updateSessionTokenRepository: UpdateSessionTokenRepository,
   ) { }
 
-  async handle(request: CreateSession.Params): Promise<HttpResponse<CreateSessionViewModel>> {
+  async handle(request: CreateSessionRepository.Params): Promise<HttpResponse<CreateSessionViewModel>> {
     // validate if the exists
     const user = await this.loadUserByEmailRepository.loadUserByEmail(request.email);
+    if (!user) throw new UserInvalidError();
+
     // compare the password
     const isPasswordValid = await this.hasComparer.compare(request.password, user.password)
     if (!isPasswordValid) throw new UserInvalidError();
+
     // encrypting the new access token
     const token = await this.encrypter.encrypt(user.uuid);
+
     // update the user access token into the DB
     const session = await this.updateSessionTokenRepository.updateSessionToken({ token, id: user.uuid })
+
     // returns the session
     return ok(session);
   }
