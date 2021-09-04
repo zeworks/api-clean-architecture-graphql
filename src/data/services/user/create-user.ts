@@ -1,7 +1,7 @@
-import { CreateUser } from '@/domain/usecases/user'
+import { CreateUserUseCase } from '@/domain/usecases/user'
 import { CreateUserRepository } from '@/data/protocols/db'
 
-export class CreateUserService implements CreateUser {
+export class CreateUserService implements CreateUserUseCase {
   constructor(
     private readonly createUserRepository: CreateUserRepository
   ) { }

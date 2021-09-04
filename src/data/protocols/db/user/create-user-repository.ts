@@ -1,12 +1,12 @@
-import { CreateUser } from '@/domain/usecases/user'
+import { CreateUserUseCase } from '@/domain/usecases/user'
 
 export interface CreateUserRepository {
   create: (input: CreateUserRepository.Params) => Promise<CreateUserRepository.Result>
 }
 
 export namespace CreateUserRepository {
-  export type Params = CreateUser.Params & {
+  export type Params = CreateUserUseCase.Params & {
     uuid: string
   }
-  export type Result = CreateUser.Result
+  export type Result = CreateUserUseCase.Result
 }

@@ -8,43 +8,31 @@ async function main() {
   const id = uuid();
   const password = await hash("ven", 8);
 
-  const createRoles = await prisma.roles.upsert({
-    update: {},
-    where: {
-      id: 1
-    },
-    create: {
+  const createRoles = await prisma.roles.create({
+    data: {
       name: "Admin"
     },
   })
 
-  const createPermissions = await prisma.permissions.upsert({
-    update: {},
-    where: {
-      id: 1
-    },
-    create: {
+  const createPermissions = await prisma.permissions.create({
+    data: {
       key: "cms.news"
     }
   })
 
-  const userVenSoftware = await prisma.user.upsert({
-    update: {},
-    where: {
-      email: "vensoftware@info.pt"
-    },
-    create: {
+  const userVenSoftware = await prisma.user.create({
+    data: {
       uuid: id,
       password,
       email: "vensoftware@info.pt",
       firstName: "VEN",
       active: true,
       roles: {
-        connect: { id: 1 }
+        connect: { id: createRoles.id }
       },
       permissions: {
         connect: {
-          id: 1
+          id: createPermissions.id
         }
       }
     },

@@ -1,10 +1,10 @@
 import { User } from '@/domain/entities'
 
-export interface CreateUser {
-  create: (input: CreateUser.Params) => Promise<CreateUser.Result>
+export interface CreateUserUseCase {
+  create: (input: CreateUserUseCase.Params) => Promise<CreateUserUseCase.Result>
 }
 
-export namespace CreateUser {
+export namespace CreateUserUseCase {
   export type Params = {
     firstName: string
     lastName?: string | null
