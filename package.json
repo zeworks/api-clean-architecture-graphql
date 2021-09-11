@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsc -w",
     "start-server": "nodemon dist/main/server.js",
-    "build": "rimraf dist && tsc"
+    "build": "rimraf dist && tsc",
+    "test": "jest --verbose --passWithNoTests --runInBand --no-cache --detectOpenHandles"
   },
   "author": "VEN",
   "license": "MIT",

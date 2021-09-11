@@ -4,6 +4,8 @@ import { CreateUserViewModel } from '@/presentation/view-models/user'
 import { CreateUserRepository, LoadUserByEmailRepository } from '@/data/protocols/db'
 import { Hasher, UUID } from '@/data/protocols/cryptography'
 import { EmailInUseError } from '@/presentation/errors'
+import { BadRequestError } from '@/presentation/errors/bad-request'
+import { validateRequiredFields } from '@/presentation/validators/required-fields-validator'
 
 export class CreateUserController implements Controller {
   constructor(
@@ -14,6 +16,9 @@ export class CreateUserController implements Controller {
   ) { }
 
   async handle(request: CreateUserRepository.Params): Promise<HttpResponse<CreateUserViewModel>> {
+    const isRequiredFieldsValid = validateRequiredFields(request, ["email", "firstName", "password"])
+    if (!isRequiredFieldsValid) throw new BadRequestError();
+
     const userAlreadyExists = await this.loadUserByEmailRepository.loadUserByEmail(request.email);
     if (userAlreadyExists) throw new EmailInUseError();
     // generate password

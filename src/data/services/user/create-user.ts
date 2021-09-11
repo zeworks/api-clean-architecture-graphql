@@ -7,8 +7,6 @@ export class CreateUserService implements CreateUserUseCase {
   ) { }
 
   async create(input: CreateUserRepository.Params): Promise<CreateUserRepository.Result> {
-    // Aqui podem ser aplicadas regras/excepções
-    // DESDE QUE façam parte de regras de negocio
     return this.createUserRepository.create(input)
   }
 }
