@@ -4,6 +4,7 @@ import { adaptResolver } from "@/main/adapters/apollo-server-resolver"
 import { makeCreateUserController } from "@/main/factories/user"
 import { EmailInUseError } from "@/presentation/errors"
 import { BadRequestError } from "@/presentation/errors/bad-request"
+import { UserInputError } from "apollo-server-errors"
 
 describe('create user tests', () => {
 
@@ -34,7 +35,7 @@ describe('create user tests', () => {
       const user = await adaptResolver<Partial<CreateUserRepository.Params>>(makeCreateUserController(), { ...user_mock, email: undefined }) as CreateUserRepository.Result;
       await db.user.delete({ where: { uuid: user.uuid } })
     } catch (error) {
-      expect(error.name).toBe(new BadRequestError().name);
+      expect(error.name).toBe(new UserInputError(error).name);
     }
   })
 })

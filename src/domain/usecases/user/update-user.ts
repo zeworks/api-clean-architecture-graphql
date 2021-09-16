@@ -18,5 +18,5 @@ export namespace UpdateUser {
     }
   }
 
-  export type Result = User
+  export type Result = Omit<User, "password">
 }
