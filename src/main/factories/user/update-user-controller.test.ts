@@ -3,7 +3,7 @@ import { db } from "@/infra/db/prisma"
 import { adaptResolver } from "@/main/adapters/apollo-server-resolver"
 import { makeUpdateUserController } from "@/main/factories/user"
 
-describe('create user tests', () => {
+describe('update user tests', () => {
 
   it('should update an user with success', async () => {
     // get any user

@@ -2,17 +2,18 @@ import { validateRequiredFields } from "./required-fields-validator"
 
 test('should return true on validate required fields', () => {
   const fields = {
-    nome: "jose",
+    name: "jose",
     email: "a",
-    age: null
+    age: null,
+    street: "Rua Antonio Pinto de Carvalho"
   }
 
-  expect(validateRequiredFields(fields, ["email", "nome"])).toBe(true)
+  expect(validateRequiredFields(fields, ["email", "name"])).toBe(true)
 })
 
 test('should return false on validate required fields', () => {
   const fields = {
-    nome: "jose",
+    name: "jose",
     email: "a",
     age: undefined
   }
