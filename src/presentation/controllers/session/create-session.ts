@@ -5,9 +5,11 @@ import {
   UpdateSessionTokenRepository
 } from '@/data/protocols/db'
 import { Controller, HttpResponse } from '@/presentation/protocols'
-import { ok } from '@/presentation/helpers'
+import { badRequest, ok } from '@/presentation/helpers'
 import { CreateSessionViewModel } from '@/presentation/view-models/session'
 import { UserInvalidError } from '@/presentation/errors'
+import { validateRequiredFields } from '@/utils/validators/required-fields-validator'
+import { BadRequestError } from '@/presentation/errors/bad-request'
 
 export class CreateSessionController implements Controller {
   constructor(
@@ -18,6 +20,10 @@ export class CreateSessionController implements Controller {
   ) { }
 
   async handle(request: CreateSessionRepository.Params): Promise<HttpResponse<CreateSessionViewModel>> {
+    // validate required fields
+    const isValid = validateRequiredFields(request, ["email", "password"]);
+    if (!isValid) return badRequest(new BadRequestError());
+
     // validate if the exists
     const user = await this.loadUserByEmailRepository.loadUserByEmail(request.email);
     if (!user) throw new UserInvalidError();

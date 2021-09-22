@@ -4,6 +4,7 @@ export default gql`
   extend type Mutation {
     createUser(input: CreateUserInput): User! @auth
     updateUser(input: UpdateUserInput, id: String): User! @auth
+    deleteUser(id: String): Boolean! @auth
   }
 
   type User {

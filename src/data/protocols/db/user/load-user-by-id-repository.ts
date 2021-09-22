@@ -1,7 +1,7 @@
 import { LoadUserById } from '@/domain/usecases/user'
 
 export interface LoadUserByIdRepository {
-  loadUserById: (input: LoadUserByIdRepository.Params) => Promise<LoadUserByIdRepository.Result>
+  loadUserById: (id: LoadUserByIdRepository.Params) => Promise<LoadUserByIdRepository.Result>
 }
 
 export namespace LoadUserByIdRepository {

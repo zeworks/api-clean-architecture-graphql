@@ -5,7 +5,7 @@ import { CreateUserRepository, LoadUserByEmailRepository } from '@/data/protocol
 import { Hasher, UUID } from '@/data/protocols/cryptography'
 import { EmailInUseError } from '@/presentation/errors'
 import { BadRequestError } from '@/presentation/errors/bad-request'
-import { validateRequiredFields } from '@/presentation/validators/required-fields-validator'
+import { validateRequiredFields } from '@/utils/validators/required-fields-validator'
 
 export class CreateUserController implements Controller {
   constructor(

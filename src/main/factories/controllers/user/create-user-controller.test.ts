@@ -1,12 +1,11 @@
 import { CreateUserRepository } from "@/data/protocols/db"
 import { db } from "@/infra/db/prisma"
 import { adaptResolver } from "@/main/adapters/apollo-server-resolver"
-import { makeCreateUserController } from "@/main/factories/user"
+import { makeCreateUserController } from "@/main/factories/controllers"
 import { EmailInUseError } from "@/presentation/errors"
-import { BadRequestError } from "@/presentation/errors/bad-request"
 import { UserInputError } from "apollo-server-errors"
 
-describe('create user tests', () => {
+describe('CREATE_USER', () => {
 
   const user_mock = {
     firstName: "First Name User Mock",

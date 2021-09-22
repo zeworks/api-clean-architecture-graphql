@@ -1,4 +1,4 @@
-import { makeCreateUserController, makeUpdateUserController } from '@/main/factories/user'
+import { makeCreateUserController, makeUpdateUserController } from '@/main/factories/controllers'
 import { routerAdapter } from '@/main/adapters'
 import { Router } from 'express'
 import { adminAuth } from '../middlewares/admin-auth-middleware'

@@ -1,7 +1,13 @@
-import { CreateUserRepository, LoadUserByEmailRepository, LoadUserByIdRepository, UpdateUserRepository } from '@/data/protocols/db'
+import {
+  CreateUserRepository,
+  DeleteUserRepository,
+  LoadUserByEmailRepository,
+  LoadUserByIdRepository,
+  UpdateUserRepository
+} from '@/data/protocols/db'
 import { db } from '@/infra/db'
 
-export class UserRepository implements CreateUserRepository, UpdateUserRepository, LoadUserByEmailRepository, LoadUserByIdRepository {
+export class UserRepository implements CreateUserRepository, UpdateUserRepository, DeleteUserRepository, LoadUserByEmailRepository, LoadUserByIdRepository {
   async create(input: CreateUserRepository.Params): Promise<CreateUserRepository.Result> {
     const user = await db.user.create({
       data: {
@@ -45,6 +51,18 @@ export class UserRepository implements CreateUserRepository, UpdateUserRepositor
       }
     })
     return user
+  }
+
+  async delete(id: string): DeleteUserRepository.Result {
+    const result = await db.user.update({
+      data: {
+        active: false
+      },
+      where: {
+        uuid: id
+      }
+    })
+    return !!result
   }
 
   async loadUserByEmail(email: LoadUserByEmailRepository.Params): Promise<LoadUserByEmailRepository.Result> {

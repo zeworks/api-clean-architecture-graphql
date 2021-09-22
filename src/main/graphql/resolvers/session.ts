@@ -1,5 +1,5 @@
 import { adaptResolver } from "@/main/adapters/apollo-server-resolver";
-import { makeCreateSessionController } from "@/main/factories/session";
+import { makeCreateSessionController } from "@/main/factories/controllers";
 
 export default {
   Query: {},
