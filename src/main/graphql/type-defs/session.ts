@@ -2,7 +2,7 @@ import { gql } from "apollo-server-express"
 
 export default gql`
   extend type Mutation {
-    createSession(email: String, password: String): Session
+    createSession(email: String!, password: String!): Session
   }
 
   type Session {

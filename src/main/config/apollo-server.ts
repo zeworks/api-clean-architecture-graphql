@@ -22,6 +22,6 @@ export const setupApolloServer = (app: Express): void => {
   server.applyMiddleware({
     app,
     cors: false,
-    path: "/v1"
+    path: "/v1",
   })
 }

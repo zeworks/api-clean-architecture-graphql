@@ -2,16 +2,27 @@ import {
   CreateUserRepository,
   DeleteUserRepository,
   LoadUserByEmailRepository,
-  LoadUserByIdRepository,
-  UpdateUserRepository
+  GetUserByIdRepository,
+  UpdateUserRepository,
+  GetUsersRepository
 } from '@/data/protocols/db'
 import { db } from '@/infra/db'
 
-export class UserRepository implements CreateUserRepository, UpdateUserRepository, DeleteUserRepository, LoadUserByEmailRepository, LoadUserByIdRepository {
+export class UserRepository implements CreateUserRepository, UpdateUserRepository, DeleteUserRepository, LoadUserByEmailRepository, GetUserByIdRepository, GetUsersRepository {
   async create(input: CreateUserRepository.Params): Promise<CreateUserRepository.Result> {
     const user = await db.user.create({
       data: {
-        ...input
+        ...input,
+        roles: {
+          connect: input.roles?.map(role => ({
+            id: role || role || 0
+          }))
+        },
+        permissions: {
+          connect: input.permissions?.map(permission => ({
+            id: permission || 0
+          })),
+        }
       },
       include: {
         permissions: true,
@@ -31,14 +42,14 @@ export class UserRepository implements CreateUserRepository, UpdateUserRepositor
         password: data.password,
         roles: {
           set: data.roles ? [] : undefined, // clean the previous roles
-          connect: data.roles?.map(role => ({
-            id: role || 0
+          connect: data.roles?.map((role: any) => ({
+            id: role.id || role || 0
           }))
         },
         permissions: {
           set: data.permissions ? [] : undefined, // clean the previous permissions
-          connect: data.permissions?.map(permission => ({
-            id: permission || 0
+          connect: data.permissions?.map((permission: any) => ({
+            id: permission.id || permission || 0
           })),
         }
       },
@@ -65,13 +76,28 @@ export class UserRepository implements CreateUserRepository, UpdateUserRepositor
     return !!result
   }
 
-  async loadUserByEmail(email: LoadUserByEmailRepository.Params): Promise<LoadUserByEmailRepository.Result> {
+  // load user by email
+  async load(email: LoadUserByEmailRepository.Params): Promise<LoadUserByEmailRepository.Result> {
     const user = await db.user.findUnique({ where: { email } });
     return user;
   }
 
-  async loadUserById(uuid: LoadUserByIdRepository.Params): Promise<LoadUserByIdRepository.Result> {
-    const user = await db.user.findUnique({ where: { uuid } });
+  /**
+   * Get user by id
+   * @param uuid 
+   * @returns 
+   */
+  async get(uuid: string): Promise<GetUserByIdRepository.Result> {
+    const user = await db.user.findUnique({ where: { uuid }, include: { permissions: true, roles: true } });
     return user;
+  }
+
+  /**
+   * Get Users
+   * @returns Array of Users
+   */
+  async getUsers(): Promise<GetUsersRepository.Result> {
+    const users = await db.user.findMany({ include: { permissions: true, roles: true } });
+    return users
   }
 }

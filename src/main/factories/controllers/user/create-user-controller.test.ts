@@ -13,13 +13,13 @@ describe('CREATE_USER', () => {
     password: "mocked",
   }
 
-  it('create user', async () => {
-    const create = await adaptResolver(makeCreateUserController(), user_mock);
-    await db.user.delete({ where: { uuid: create.uuid } })
-    expect(create.email).toBe(user_mock.email);
+  it('shoulld create user', async () => {
+    const user = await adaptResolver(makeCreateUserController(), user_mock);
+    await db.user.delete({ where: { uuid: user.uuid } })
+    expect(user.email).toBe(user_mock.email);
   })
 
-  it('create an existing user', async () => {
+  it('sould return an error trying to create an existing user', async () => {
     const user = await adaptResolver(makeCreateUserController(), user_mock);
     try {
       await adaptResolver(makeCreateUserController(), user_mock);
@@ -29,7 +29,7 @@ describe('CREATE_USER', () => {
     }
   });
 
-  it('create user without email', async () => {
+  it('should return error on create user without email', async () => {
     try {
       const user = await adaptResolver<Partial<CreateUserRepository.Params>>(makeCreateUserController(), { ...user_mock, email: undefined }) as CreateUserRepository.Result;
       await db.user.delete({ where: { uuid: user.uuid } })

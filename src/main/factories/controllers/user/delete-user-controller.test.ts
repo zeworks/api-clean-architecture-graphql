@@ -8,8 +8,8 @@ import { makeDeleteUserController } from "./delete-user-controller"
 
 describe('DELETE_USER', () => {
   it('should delete user', async () => {
+    const user = await db.user.findFirst();
     try {
-      const user = await db.user.findFirst();
       const result = await adaptResolver<DeleteUserRepository.Params>(makeDeleteUserController(), { id: user.uuid })
       await adaptResolver<UpdateUserRepository.Params>(makeUpdateUserController(), { id: user.uuid, input: { active: true } });
       expect(result).toBe(true);
@@ -29,15 +29,16 @@ describe('DELETE_USER', () => {
   it('try to delete user, already deleted', async () => {
     // get any user
     const user = await db.user.findFirst();
-    // delete user
-    await adaptResolver<UpdateUserRepository.Params>(makeUpdateUserController(), { id: user.uuid, input: { active: false } });
+
     try {
+      // delete first time
+      // can return error on first time, if the user was already inactive
+      await adaptResolver<DeleteUserRepository.Params>(makeDeleteUserController(), { id: user.uuid });
+      // on delete second time, should return an error
       await adaptResolver<DeleteUserRepository.Params>(makeDeleteUserController(), { id: user.uuid });
     } catch (error) {
-      // revert changes
       await adaptResolver<UpdateUserRepository.Params>(makeUpdateUserController(), { id: user.uuid, input: { active: true } });
-      expect(error).toBe(forbidden(error).data);
+      expect(error.message).toBe(new UserInvalidError().message);
     }
-
   })
 })

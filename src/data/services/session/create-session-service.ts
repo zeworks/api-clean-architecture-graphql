@@ -6,7 +6,7 @@ export class CreateSessionService implements CreateSession {
     private readonly createSessionRepository: CreateSessionRepository
   ) { }
 
-  async create(input: CreateSessionRepository.Params): Promise<any> {
+  async create(input: CreateSessionRepository.Params): Promise<CreateSessionRepository.Result> {
     return this.createSessionRepository.create(input)
   }
 }

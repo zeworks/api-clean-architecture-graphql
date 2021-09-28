@@ -1,14 +1,13 @@
-import { Controller, HttpResponse } from '@/presentation/protocols'
+import { Controller, HttpResponse, Validation } from '@/presentation/protocols'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers'
 import { CreateUserViewModel } from '@/presentation/view-models/user'
 import { CreateUserRepository, LoadUserByEmailRepository } from '@/data/protocols/db'
 import { Hasher, UUID } from '@/data/protocols/cryptography'
 import { EmailInUseError } from '@/presentation/errors'
-import { BadRequestError } from '@/presentation/errors/bad-request'
-import { validateRequiredFields } from '@/utils/validators/required-fields-validator'
 
 export class CreateUserController implements Controller {
   constructor(
+    private readonly validation: Validation,
     private readonly createUserRepository: CreateUserRepository,
     private readonly loadUserByEmailRepository: LoadUserByEmailRepository,
     private readonly hasher: Hasher,
@@ -17,10 +16,14 @@ export class CreateUserController implements Controller {
 
   async handle(request: CreateUserRepository.Params): Promise<HttpResponse<CreateUserViewModel>> {
     try {
-      const isRequiredFieldsValid = validateRequiredFields(request, ["email", "firstName", "password"])
-      if (!isRequiredFieldsValid) return badRequest(new BadRequestError());
+      // validates request
+      const error = this.validation.validate(request);
 
-      const userAlreadyExists = await this.loadUserByEmailRepository.loadUserByEmail(request.email);
+      if (error) {
+        return badRequest(error)
+      }
+
+      const userAlreadyExists = await this.loadUserByEmailRepository.load(request.email);
       if (userAlreadyExists) return forbidden(new EmailInUseError());
 
       // generate password
@@ -34,6 +37,7 @@ export class CreateUserController implements Controller {
         password,
         uuid
       })
+
       return ok(user)
     } catch (error) {
       return serverError(error)

@@ -1,27 +1,26 @@
 import { Hasher } from "@/data/protocols/cryptography";
-import { LoadUserByIdRepository, UpdateUserRepository } from "@/data/protocols/db";
-import { UserInvalidError } from "@/presentation/errors";
-import { BadRequestError } from "@/presentation/errors/bad-request";
+import { GetUserByIdRepository, UpdateUserRepository } from "@/data/protocols/db";
+import { ServerError, UserInvalidError } from "@/presentation/errors";
 import { badRequest, forbidden, ok, serverError } from "@/presentation/helpers";
-import { Controller, HttpResponse } from "@/presentation/protocols";
-import { validateRequiredFields } from "@/utils/validators/required-fields-validator";
+import { Controller, HttpResponse, Validation } from "@/presentation/protocols";
 
 export class UpdateUserController implements Controller {
   constructor(
+    private readonly validation: Validation,
     private readonly updateUserRepository: UpdateUserRepository,
-    private readonly loadUserByIdRepository: LoadUserByIdRepository,
+    private readonly getUserByIdRepository: GetUserByIdRepository,
     private readonly hashAdapter: Hasher
   ) { }
 
   async handle(request: UpdateUserRepository.Params): Promise<HttpResponse<UpdateUserRepository.Result>> {
     try {
-      const isRequiredFieldsValid = validateRequiredFields(request, ["id"])
-      if (!isRequiredFieldsValid) return badRequest(new BadRequestError());
+      const errors = this.validation.validate(request);
+      if (errors) return badRequest(errors);
 
-      const userFound: any = await this.loadUserByIdRepository.loadUserById(request.id);
+      const userFound: any = await this.getUserByIdRepository.get(request.id);
       if (!userFound) return forbidden(new UserInvalidError());
 
-      let password: string = request.input.password;
+      let password: string = userFound.password;
 
       if (request.input.password) {
         password = await this.hashAdapter.hash(request.input.password)

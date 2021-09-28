@@ -4,15 +4,14 @@ import {
   LoadUserByEmailRepository,
   UpdateSessionTokenRepository
 } from '@/data/protocols/db'
-import { Controller, HttpResponse } from '@/presentation/protocols'
-import { badRequest, ok } from '@/presentation/helpers'
+import { Controller, HttpResponse, Validation } from '@/presentation/protocols'
+import { badRequest, ok, serverError } from '@/presentation/helpers'
 import { CreateSessionViewModel } from '@/presentation/view-models/session'
 import { UserInvalidError } from '@/presentation/errors'
-import { validateRequiredFields } from '@/utils/validators/required-fields-validator'
-import { BadRequestError } from '@/presentation/errors/bad-request'
 
 export class CreateSessionController implements Controller {
   constructor(
+    private readonly validation: Validation,
     private readonly loadUserByEmailRepository: LoadUserByEmailRepository,
     private readonly hasComparer: HashComparer,
     private readonly encrypter: Encrypter,
@@ -20,25 +19,32 @@ export class CreateSessionController implements Controller {
   ) { }
 
   async handle(request: CreateSessionRepository.Params): Promise<HttpResponse<CreateSessionViewModel>> {
-    // validate required fields
-    const isValid = validateRequiredFields(request, ["email", "password"]);
-    if (!isValid) return badRequest(new BadRequestError());
+    try {
+      // validate request
+      const error = this.validation.validate(request)
 
-    // validate if the exists
-    const user = await this.loadUserByEmailRepository.loadUserByEmail(request.email);
-    if (!user) throw new UserInvalidError();
+      if (error) {
+        return badRequest(error)
+      }
 
-    // compare the password
-    const isPasswordValid = await this.hasComparer.compare(request.password, user.password)
-    if (!isPasswordValid) throw new UserInvalidError();
+      // validate if the exists
+      const user = await this.loadUserByEmailRepository.load(request.email);
+      if (!user) throw new UserInvalidError();
 
-    // encrypting the new access token
-    const token = await this.encrypter.encrypt(user.uuid);
+      // compare the password
+      const isPasswordValid = await this.hasComparer.compare(request.password, user.password)
+      if (!isPasswordValid) throw new UserInvalidError();
 
-    // update the user access token into the DB
-    const session = await this.updateSessionTokenRepository.updateSessionToken({ token, id: user.uuid })
+      // encrypting the new access token
+      const token = await this.encrypter.encrypt(user.uuid);
 
-    // returns the session
-    return ok(session);
+      // update the user access token into the DB
+      const session = await this.updateSessionTokenRepository.update({ token, id: user.uuid })
+
+      // returns the session
+      return ok(session);
+    } catch (error) {
+      return serverError(error)
+    }
   }
 }

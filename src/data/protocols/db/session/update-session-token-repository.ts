@@ -1,7 +1,7 @@
 import { UpdateSessionToken } from '@/domain/usecases/session'
 
 export interface UpdateSessionTokenRepository {
-  updateSessionToken: (input: UpdateSessionTokenRepository.Params) => Promise<UpdateSessionTokenRepository.Result>
+  update: (input: UpdateSessionTokenRepository.Params) => Promise<UpdateSessionTokenRepository.Result>
 }
 
 export namespace UpdateSessionTokenRepository {

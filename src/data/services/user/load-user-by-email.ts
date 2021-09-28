@@ -7,6 +7,6 @@ export class LoadUserByEmailService implements LoadUserByEmail {
   ) { }
 
   async load(input: LoadUserByEmailRepository.Params): Promise<LoadUserByEmailRepository.Result> {
-    return this.loadUserByEmailRepository.loadUserByEmail(input)
+    return this.loadUserByEmailRepository.load(input)
   }
 }

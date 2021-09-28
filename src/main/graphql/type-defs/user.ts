@@ -1,6 +1,11 @@
 import { gql } from "apollo-server-express"
 
 export default gql`
+  extend type Query {
+    getUser(id: String): User @auth
+    getUsers: [Users] @auth
+  }
+
   extend type Mutation {
     createUser(input: CreateUserInput): User! @auth
     updateUser(input: UpdateUserInput, id: String): User! @auth
@@ -19,11 +24,24 @@ export default gql`
     permissions: [Permission]
   }
 
-  input CreateUserInput {
+  type Users {
+    uuid: String!
     firstName: String!
-    lastName: String
     email: String!
-    password: String!
+    lastName: String
+    avatarUrl: String
+    active: Boolean!
+    roles: [Role]
+    permissions: [Permission]
+  }
+
+  input CreateUserInput {
+    firstName: String
+    lastName: String
+    email: String
+    password: String
+    roles: [Int]
+    permissions: [Int]
   }
 
   input UpdateUserInput {
@@ -33,5 +51,6 @@ export default gql`
     password: String
     roles: [Int]
     permissions: [Int]
+    active: Boolean
   }
 `;

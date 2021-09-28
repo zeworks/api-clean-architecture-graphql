@@ -7,6 +7,6 @@ export class UpdateSessionTokenService implements UpdateSessionToken {
   ) { }
 
   async update(token: UpdateSessionTokenRepository.Params): Promise<UpdateSessionTokenRepository.Result> {
-    return this.updateSessionTokenRepository.updateSessionToken(token)
+    return this.updateSessionTokenRepository.update(token)
   }
 }

@@ -1,7 +1,7 @@
 import { LoadUserByEmail } from '@/domain/usecases/user'
 
 export interface LoadUserByEmailRepository {
-  loadUserByEmail: (input: LoadUserByEmailRepository.Params) => Promise<LoadUserByEmailRepository.Result>
+  load: (input: LoadUserByEmailRepository.Params) => Promise<LoadUserByEmailRepository.Result>
 }
 
 export namespace LoadUserByEmailRepository {

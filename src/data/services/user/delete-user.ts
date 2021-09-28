@@ -7,6 +7,6 @@ export class DeleteUserService implements DeleteUserUseCase {
   ) { }
 
   async delete(id: string): DeleteUserUseCase.Result {
-    return await this.deleteUserRepository.delete(id)
+    return this.deleteUserRepository.delete(id)
   }
 }
