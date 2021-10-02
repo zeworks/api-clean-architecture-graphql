@@ -2,12 +2,16 @@ import { Controller } from '@/presentation/protocols'
 import { ApolloError, AuthenticationError, ForbiddenError, UserInputError } from 'apollo-server-errors'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const adaptResolver = async <ArgsType = any, ContextType = any>(controller: Controller, args?: ArgsType, context?: any): Promise<any> => {
+export const adaptResolver = async <ArgsType = any, ContextType = any>(controller: Controller, args?: ArgsType, cntxt?: any): Promise<any> => {
   const request = {
     ...(args || {}),
   }
 
-  const httpResponse = await controller.handle(request);
+  const context = {
+    ...(cntxt || {}),
+  }
+
+  const httpResponse = await controller.handle(request, context);
 
   switch (httpResponse.statusCode) {
     case 200:
