@@ -5,7 +5,7 @@ import {
   UpdateSessionTokenRepository
 } from '@/data/protocols/db'
 import { Controller, HttpResponse, Validation } from '@/presentation/protocols'
-import { badRequest, ok, serverError } from '@/presentation/helpers'
+import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers'
 import { CreateSessionViewModel } from '@/presentation/view-models/session'
 import { UserInvalidError } from '@/presentation/errors'
 
@@ -29,11 +29,11 @@ export class CreateSessionController implements Controller {
 
       // validate if the exists
       const user = await this.loadUserByEmailRepository.load(request.email);
-      if (!user) throw new UserInvalidError();
+      if (!user || !user.active) return forbidden(new UserInvalidError());
 
       // compare the password
       const isPasswordValid = await this.hasComparer.compare(request.password, user.password)
-      if (!isPasswordValid) throw new UserInvalidError();
+      if (!isPasswordValid) return forbidden(new UserInvalidError());
 
       // encrypting the new access token
       const token = await this.encrypter.encrypt(user.uuid);

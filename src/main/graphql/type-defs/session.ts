@@ -16,5 +16,6 @@ export default gql`
     email: String!
     accessToken: String!
     avatarUrl: String
+    active: Boolean
   }
 `;

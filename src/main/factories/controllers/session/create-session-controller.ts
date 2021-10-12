@@ -1,5 +1,4 @@
 import { UpdateSessionTokenService } from '@/data/services/session'
-import { CreateSessionService } from '@/data/services/session/create-session-service'
 import { LoadUserByEmailService } from '@/data/services/user'
 import { BcryptAdapter, JwtAdapter } from '@/infra/adapters'
 import { SessionRepository } from '@/infra/repositories/session'
