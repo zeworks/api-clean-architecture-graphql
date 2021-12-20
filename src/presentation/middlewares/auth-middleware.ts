@@ -27,7 +27,7 @@ export class AuthMiddleware implements Middleware {
 
       return forbidden(new UnauthorizedError())
     } catch (error) {
-      return serverError(error)
+      return serverError(new UnauthorizedError())
     }
   }
 }

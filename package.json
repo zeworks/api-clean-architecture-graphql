@@ -45,9 +45,6 @@
     "tsconfig-paths": "^3.9.0",
     "uuidv4": "^6.2.10"
   },
-  "engines": {
-    "node": "12.x"
-  },
   "_moduleAliases": {
     "@": "dist"
   }
